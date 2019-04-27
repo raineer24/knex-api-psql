@@ -2,6 +2,8 @@
 
 const { Blog } = require("../models");
 
+const log = require("color-logs")(true, true, "Blog");
+
 // const getBlogs = () => {
 //   Blog.findAll()
 //     .then(blogs => {
