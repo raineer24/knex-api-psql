@@ -1,7 +1,7 @@
 "use strict";
 
 const router = require("express").Router();
-const { getBlogs } = require("../controllers/blog_controllers");
+const { getBlogs, getBlog } = require("../controllers/blog_controllers");
 
 // router
 //   .route("/users/:id/projects")
@@ -9,11 +9,14 @@ const { getBlogs } = require("../controllers/blog_controllers");
 //   .get(getProjects);
 
 router.route("/contents").get(getBlogs);
+// .post();
 
 // router
 //   .route("/projects/:id")
 //   .get(getProject)
 //   .put(putProject)
 //   .delete(deleteProject);
+
+router.route("/contents/:id").get(getBlog);
 
 module.exports = router;

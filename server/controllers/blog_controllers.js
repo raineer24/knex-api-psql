@@ -2,7 +2,7 @@
 
 const { Blog } = require("../models");
 
-const log = require("color-logs")(true, true, "Blog");
+const log = require("color-logs")(true, true, "Blogs");
 
 // const getBlogs = () => {
 //   Blog.findAll()
@@ -28,6 +28,14 @@ const getBlogs = (req, res, next) => {
     .catch(next);
 };
 
+const getBlog = (req, res, next) => {
+  const contentId = req.params.id;
+
+  Blog.findById(contentId)
+    .then(content => res.json({ ok: true, mesage: "Content found", content }))
+    .catch(next);
+};
+
 // const getUser = id => {
 //   User.findById(id)
 //     .then(user => {
@@ -49,5 +57,6 @@ const createBlog = user => {
 };
 
 module.exports = {
-  getBlogs
+  getBlogs,
+  getBlog
 };
