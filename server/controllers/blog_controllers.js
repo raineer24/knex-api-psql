@@ -56,7 +56,42 @@ const createBlog = user => {
     .catch(err => console.log("ERROR: ", err));
 };
 
+// const putBlog = (req, res, next) => {
+//   const contentId = req.params.id;
+//   const props = req.body.user;
+
+//   Blog.update(contentId, props).then(updateContent =>
+//     Promise.all([updateContent, Blog.findById(contentId)])
+//       .then(([updateContent, content]) =>
+//         res.json({
+//           ok: true,
+//           message: "Content Updated",
+//           content,
+//           updateContent
+//         })
+//       )
+//       .catch(next)
+//   );
+// };
+
+const putBlog = (req, res, next) => {
+  const contentId = req.params.id;
+  const props = req.body;
+  console.log(props);
+
+  Blog.update(contentId, props)
+    .then(content =>
+      res.json({
+        ok: true,
+        message: "Content Updated",
+        content
+      })
+    )
+    .catch(next);
+};
+
 module.exports = {
   getBlogs,
-  getBlog
+  getBlog,
+  putBlog
 };

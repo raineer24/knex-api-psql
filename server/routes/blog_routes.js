@@ -1,7 +1,11 @@
 "use strict";
 
 const router = require("express").Router();
-const { getBlogs, getBlog } = require("../controllers/blog_controllers");
+const {
+  getBlogs,
+  getBlog,
+  putBlog
+} = require("../controllers/blog_controllers");
 
 // router
 //   .route("/users/:id/projects")
@@ -17,6 +21,9 @@ router.route("/contents").get(getBlogs);
 //   .put(putProject)
 //   .delete(deleteProject);
 
-router.route("/contents/:id").get(getBlog);
+router
+  .route("/contents/:id")
+  .get(getBlog)
+  .put(putBlog);
 
 module.exports = router;
