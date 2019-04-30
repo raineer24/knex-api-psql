@@ -4,7 +4,8 @@ const router = require("express").Router();
 const {
   getBlogs,
   getBlog,
-  putBlog
+  putBlog,
+  postBlogs
 } = require("../controllers/blog_controllers");
 
 // router
@@ -12,7 +13,10 @@ const {
 //   .post(postProjects)
 //   .get(getProjects);
 
-router.route("/contents").get(getBlogs);
+router
+  .route("/contents")
+  .post(postBlogs)
+  .get(getBlogs);
 // .post();
 
 // router

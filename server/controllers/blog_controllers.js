@@ -16,6 +16,22 @@ const log = require("color-logs")(true, true, "Blogs");
 //     .catch(err => console.log("ERROR: ", err));
 // };
 
+const postBlogs = (req, res, next) => {
+  const props = req.body;
+  console.log(props);
+
+  Blog.create(props)
+    .then(
+      props => log.info(props),
+      res.json({
+        ok: true,
+        message: "Blog created",
+        props
+      })
+    )
+    .catch(next);
+};
+
 const getBlogs = (req, res, next) => {
   Blog.findAll()
     .then(blogs =>
@@ -80,17 +96,18 @@ const putBlog = (req, res, next) => {
   console.log(props);
 
   Blog.update(contentId, props)
-    .then(content =>
+    .then(contents =>
       res.json({
         ok: true,
         message: "Content Updated",
-        content
+        contents
       })
     )
     .catch(next);
 };
 
 module.exports = {
+  postBlogs,
   getBlogs,
   getBlog,
   putBlog
