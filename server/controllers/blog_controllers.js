@@ -96,11 +96,12 @@ const putBlog = (req, res, next) => {
   console.log(props);
 
   Blog.update(contentId, props)
-    .then(contents =>
+    .then(
+      props => log.info(`log.info : ${props}`),
       res.json({
         ok: true,
         message: "Content Updated",
-        contents
+        props
       })
     )
     .catch(next);
