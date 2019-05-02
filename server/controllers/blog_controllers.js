@@ -18,16 +18,21 @@ const log = require("color-logs")(true, true, "Blogs");
 
 const postBlogs = (req, res, next) => {
   const props = req.body;
-  console.log(props);
 
   Blog.create(props)
     .then(
-      props => log.info(props),
-      res.json({
-        ok: true,
-        message: "Blog created",
-        props
-      })
+      content => {
+        return res.json({
+          content,
+          message: "Saved"
+        });
+      }
+      // props => log.info(props),
+      // res.json({
+      //   ok: true,
+      //   message: "Blog created",
+      //   props
+      // })
     )
     .catch(next);
 };
