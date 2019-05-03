@@ -18,6 +18,7 @@ module.exports = ({
     knex
       .insert(props)
       .into(tableName)
+      .returning(selectableProps)
       .timeout(timeout);
 
   const findAll = () =>
