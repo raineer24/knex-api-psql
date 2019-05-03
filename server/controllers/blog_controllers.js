@@ -4,37 +4,36 @@ const { Blog } = require("../models");
 
 const log = require("color-logs")(true, true, "Blogs");
 
-// const getBlogs = () => {
-//   Blog.findAll()
-//     .then(blogs => {
-//       blog.forEach(blog =>
-//         console.log("blog: ", JSON.stringify(blog, null, 2))
-//       );
-
-//       return blogs;
-//     })
-//     .catch(err => console.log("ERROR: ", err));
-// };
+function validBlog(blog) {
+  const hasTitle = typeof blog.title === "string" && blog.title.trim() !== "";
+  const hasContent =
+    typeof blog.describlogs === "string" && blog.describlogs.trim() !== "";
+  return hasTitle && hasContent;
+}
 
 const postBlogs = (req, res, next) => {
   const props = req.body;
 
-  Blog.create(props)
-    .then(
-      content => {
-        return res.json({
-          content,
-          message: "Saved"
-        });
-      }
-      // props => log.info(props),
-      // res.json({
-      //   ok: true,
-      //   message: "Blog created",
-      //   props
-      // })
-    )
-    .catch(next);
+  if (validBlog(props)) {
+    Blog.create(props)
+      .then(
+        content => {
+          return res.json({
+            content,
+            message: "Saved"
+          });
+        }
+        // props => log.info(props),
+        // res.json({
+        //   ok: true,
+        //   message: "Blog created",
+        //   props
+        // })
+      )
+      .catch(next);
+  } else {
+    next(new Error("Invalid Blog"));
+  }
 };
 
 const getBlogs = (req, res, next) => {
@@ -51,6 +50,13 @@ const getBlogs = (req, res, next) => {
 
 const getBlog = (req, res, next) => {
   const contentId = req.params.id;
+  console.log(typeof contentId);
+
+  log.info(contentId);
+  if (isNaN(contentId)) {
+    next(new Error("Invalid ID"));
+    return next();
+  }
 
   Blog.findById(contentId)
     .then(content => res.json({ ok: true, mesage: "Content found", content }))
@@ -67,15 +73,15 @@ const getBlog = (req, res, next) => {
 //     .catch(err => console.log("ERROR: ", err));
 // };
 
-const createBlog = user => {
-  Blog.create(blog)
-    .then(blog => {
-      console.log("created blog: ", blog);
+// const createBlog = user => {
+//   Blog.create(blog)
+//     .then(blog => {
+//       console.log("created blog: ", blog);
 
-      return blog;
-    })
-    .catch(err => console.log("ERROR: ", err));
-};
+//       return blog;
+//     })
+//     .catch(err => console.log("ERROR: ", err));
+// };
 
 // const putBlog = (req, res, next) => {
 //   const contentId = req.params.id;
@@ -99,6 +105,12 @@ const putBlog = (req, res, next) => {
   const contentId = req.params.id;
   const props = req.body;
   console.log(props);
+
+  log.info(contentId);
+  if (isNaN(contentId)) {
+    next(new Error("Invalid ID"));
+    return next();
+  }
 
   Blog.update(contentId, props)
     .then(
