@@ -5,7 +5,8 @@ const {
   getBlogs,
   getBlog,
   putBlog,
-  postBlogs
+  postBlogs,
+  deleteBlog
 } = require("../controllers/blog_controllers");
 
 // router
@@ -28,6 +29,7 @@ router
 router
   .route("/contents/:id")
   .get(getBlog)
-  .put(putBlog);
+  .put(putBlog)
+  .delete(deleteBlog);
 
 module.exports = router;

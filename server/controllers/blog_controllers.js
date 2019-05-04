@@ -63,44 +63,6 @@ const getBlog = (req, res, next) => {
     .catch(next);
 };
 
-// const getUser = id => {
-//   User.findById(id)
-//     .then(user => {
-//       console.log("user: ", user);
-
-//       return user;
-//     })
-//     .catch(err => console.log("ERROR: ", err));
-// };
-
-// const createBlog = user => {
-//   Blog.create(blog)
-//     .then(blog => {
-//       console.log("created blog: ", blog);
-
-//       return blog;
-//     })
-//     .catch(err => console.log("ERROR: ", err));
-// };
-
-// const putBlog = (req, res, next) => {
-//   const contentId = req.params.id;
-//   const props = req.body.user;
-
-//   Blog.update(contentId, props).then(updateContent =>
-//     Promise.all([updateContent, Blog.findById(contentId)])
-//       .then(([updateContent, content]) =>
-//         res.json({
-//           ok: true,
-//           message: "Content Updated",
-//           content,
-//           updateContent
-//         })
-//       )
-//       .catch(next)
-//   );
-// };
-
 const putBlog = (req, res, next) => {
   const contentId = req.params.id;
   const props = req.body;
@@ -124,9 +86,22 @@ const putBlog = (req, res, next) => {
     .catch(next);
 };
 
+const deleteBlog = (req,res, next) => {
+  const contentId =req.params.id;
+
+  Blog.destroy(contentId)
+  .then(deleteCount => res.json({
+    ok: true,
+    message: `Blog '${ contentId}' deleted`,
+    deleteCount
+  }))
+  .catch(next)
+}
+
 module.exports = {
   postBlogs,
   getBlogs,
   getBlog,
-  putBlog
+  putBlog,
+  deleteBlog
 };
