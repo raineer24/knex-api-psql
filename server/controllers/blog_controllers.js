@@ -3,6 +3,8 @@
 const { Blog } = require("../models");
 
 const log = require("color-logs")(true, true, "Blogs");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 function validBlog(blog) {
   const hasTitle = typeof blog.title === "string" && blog.title.trim() !== "";
@@ -11,8 +13,20 @@ function validBlog(blog) {
   return hasTitle && hasContent;
 }
 
+const isValidId = (req, res, next) => {
+  // if (isNaN(contentId)) {
+  //   next(new Error("Invalid ID"));
+  //   return next();
+  // }
+  if (!isNaN(req.params.id)) return next();
+  next(new Error("Invalid ID"));
+  // console.log(typeof req.params.id);
+  // next();
+};
+
 const postBlogs = (req, res, next) => {
   const props = req.body;
+  console.log(req.file);
 
   if (validBlog(props)) {
     Blog.create(props)
@@ -50,13 +64,12 @@ const getBlogs = (req, res, next) => {
 
 const getBlog = (req, res, next) => {
   const contentId = req.params.id;
-  console.log(typeof contentId);
 
-  log.info(contentId);
-  if (isNaN(contentId)) {
-    next(new Error("Invalid ID"));
-    return next();
-  }
+  // log.info(contentId);
+  // if (isNaN(contentId)) {
+  //   next(new Error("Invalid ID"));
+  //   return next();
+  // }
 
   Blog.findById(contentId)
     .then(content => res.json({ ok: true, mesage: "Content found", content }))
@@ -86,22 +99,25 @@ const putBlog = (req, res, next) => {
     .catch(next);
 };
 
-const deleteBlog = (req,res, next) => {
-  const contentId =req.params.id;
+const deleteBlog = (req, res, next) => {
+  const contentId = req.params.id;
 
   Blog.destroy(contentId)
-  .then(deleteCount => res.json({
-    ok: true,
-    message: `Blog '${ contentId}' deleted`,
-    deleteCount
-  }))
-  .catch(next)
-}
+    .then(deleteCount =>
+      res.json({
+        ok: true,
+        message: `Blog '${contentId}' deleted`,
+        deleteCount
+      })
+    )
+    .catch(next);
+};
 
 module.exports = {
   postBlogs,
   getBlogs,
   getBlog,
   putBlog,
-  deleteBlog
+  deleteBlog,
+  isValidId
 };

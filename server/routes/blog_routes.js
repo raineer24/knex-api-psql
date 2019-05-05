@@ -6,7 +6,8 @@ const {
   getBlog,
   putBlog,
   postBlogs,
-  deleteBlog
+  deleteBlog,
+  isValidId
 } = require("../controllers/blog_controllers");
 
 // router
@@ -28,7 +29,7 @@ router
 
 router
   .route("/contents/:id")
-  .get(getBlog)
+  .get(isValidId, getBlog)
   .put(putBlog)
   .delete(deleteBlog);
 
