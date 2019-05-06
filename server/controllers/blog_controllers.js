@@ -3,38 +3,51 @@
 const { Blog } = require("../models");
 
 const log = require("color-logs")(true, true, "Blogs");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
-// const getBlogs = () => {
-//   Blog.findAll()
-//     .then(blogs => {
-//       blog.forEach(blog =>
-//         console.log("blog: ", JSON.stringify(blog, null, 2))
-//       );
+function validBlog(blog) {
+  const hasTitle = typeof blog.title === "string" && blog.title.trim() !== "";
+  const hasContent =
+    typeof blog.describlogs === "string" && blog.describlogs.trim() !== "";
+  return hasTitle && hasContent;
+}
 
-//       return blogs;
-//     })
-//     .catch(err => console.log("ERROR: ", err));
-// };
+const isValidId = (req, res, next) => {
+  // if (isNaN(contentId)) {
+  //   next(new Error("Invalid ID"));
+  //   return next();
+  // }
+  if (!isNaN(req.params.id)) return next();
+  next(new Error("Invalid ID"));
+  // console.log(typeof req.params.id);
+  // next();
+};
 
 const postBlogs = (req, res, next) => {
   const props = req.body;
+  console.log(req.file);
 
-  Blog.create(props)
-    .then(
-      content => {
-        return res.json({
-          content,
-          message: "Saved"
-        });
-      }
-      // props => log.info(props),
-      // res.json({
-      //   ok: true,
-      //   message: "Blog created",
-      //   props
-      // })
-    )
-    .catch(next);
+  if (validBlog(props)) {
+    Blog.create(props)
+      .then(
+        content => {
+          return res.json({
+            content,
+            message: "Saved"
+          });
+        }
+        // props => log.info(props),
+        // res.json({
+        //   ok: true,
+        //   message: "Blog created",
+        //   props
+        // })
+      )
+      .catch(next);
+  } else {
+    next(new Error("Invalid Blog"));
+  }
 };
 
 const getBlogs = (req, res, next) => {
@@ -52,53 +65,27 @@ const getBlogs = (req, res, next) => {
 const getBlog = (req, res, next) => {
   const contentId = req.params.id;
 
+  // log.info(contentId);
+  // if (isNaN(contentId)) {
+  //   next(new Error("Invalid ID"));
+  //   return next();
+  // }
+
   Blog.findById(contentId)
     .then(content => res.json({ ok: true, mesage: "Content found", content }))
     .catch(next);
 };
 
-// const getUser = id => {
-//   User.findById(id)
-//     .then(user => {
-//       console.log("user: ", user);
-
-//       return user;
-//     })
-//     .catch(err => console.log("ERROR: ", err));
-// };
-
-const createBlog = user => {
-  Blog.create(blog)
-    .then(blog => {
-      console.log("created blog: ", blog);
-
-      return blog;
-    })
-    .catch(err => console.log("ERROR: ", err));
-};
-
-// const putBlog = (req, res, next) => {
-//   const contentId = req.params.id;
-//   const props = req.body.user;
-
-//   Blog.update(contentId, props).then(updateContent =>
-//     Promise.all([updateContent, Blog.findById(contentId)])
-//       .then(([updateContent, content]) =>
-//         res.json({
-//           ok: true,
-//           message: "Content Updated",
-//           content,
-//           updateContent
-//         })
-//       )
-//       .catch(next)
-//   );
-// };
-
 const putBlog = (req, res, next) => {
   const contentId = req.params.id;
   const props = req.body;
   console.log(props);
+
+  log.info(contentId);
+  if (isNaN(contentId)) {
+    next(new Error("Invalid ID"));
+    return next();
+  }
 
   Blog.update(contentId, props)
     .then(
@@ -112,9 +99,25 @@ const putBlog = (req, res, next) => {
     .catch(next);
 };
 
+const deleteBlog = (req, res, next) => {
+  const contentId = req.params.id;
+
+  Blog.destroy(contentId)
+    .then(deleteCount =>
+      res.json({
+        ok: true,
+        message: `Blog '${contentId}' deleted`,
+        deleteCount
+      })
+    )
+    .catch(next);
+};
+
 module.exports = {
   postBlogs,
   getBlogs,
   getBlog,
-  putBlog
+  putBlog,
+  deleteBlog,
+  isValidId
 };
